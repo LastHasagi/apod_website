@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foto do Dia da NASA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background: linear-gradient(to left, #5a04aa, #012952); /* Degradê de cor do roxo ao azul */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px; /* Altura máxima da imagem */
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input[type="date"] {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #explanation {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #ffffff;">Veja a Foto do Dia da NASA</h1>
+    <h2 style="color: #ffffff;">Escolha a data e aproveite a vista</h2>
+    <form id="apodForm">
+        <label for="date" style="color: #ffffff;">Data:</label>
+        <input type="date" id="date" name="date" required>
+        <button type="submit" style="color: #ffffff;">Consultar</button>
+    </form>
+    <div id="result">
+        <h2 id="title" style="color: #ffffff;"></h2>
+        <img id="photo" src="" alt="Foto do Dia da NASA" style="color: #ffffff;">
+        <div id="explanation"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('max', today);
+
+            document.getElementById('apodForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const date = dateInput.value;
+                if (date > today) {
+                    alert('A data não pode ser maior que a data de hoje.');
+                    return;
+                }
+                fetch(`/v1/apod?api_key=DEMO_KEY&date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('title').textContent = data.title;
+                        document.getElementById('photo').src = data.url;
+                        document.getElementById('explanation').textContent = data.explanation;
+                    })
+                    .catch(error => console.error('Erro:', error));
+            });
+        });
+    </script>
+</body>
+</html>
