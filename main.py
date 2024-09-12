@@ -1,10 +1,9 @@
-from flask import Flask, render_template
+from app import create_app
+from asgiref.wsgi import WsgiToAsgi
 
-app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return render_template('index.html')
+app = create_app()
+asgi_app = WsgiToAsgi(app)
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8000)
+    import uvicorn
+    uvicorn.run(asgi_app, host='127.0.0.1', port=8000, lifespan='off')
